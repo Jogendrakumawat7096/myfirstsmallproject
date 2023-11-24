@@ -88,8 +88,8 @@ def forgot_password(request):
 
 def verify_otp(request):
     email = request.POST['email']
-    otp = int(request.POST.get('otp'))
-    uotp = int(request.POST.get('uotp'))
+    otp = int(request.POST['otp'])
+    uotp = int(request.POST['uotp'])
     if otp == uotp:
         return render(request, 'new-password.html', {'email': email})
     else:
@@ -112,17 +112,18 @@ def new_password(request):
         return render(request, 'new-password.html', {'msg': msg,'email':email})
 
 def logout(request):
-    request.session.pop('email', None)
-    request.session.pop('fname', None)
+    del  request.session['email']
+    del  request.session['fname']
+
     return render(request, 'login.html')
 
 def change_pass(request):
     if request.method == "POST":
         try:
             user = Register.objects.get(email=request.session.get('email'))
-            if request.POST.get('opassword')==user.password:
-                if request.POST.get('npassword') == request.POST.get('cnpassword'):
-                    user.password = request.POST.get('npassword')
+            if request.POST['opassword']==user.password:
+                if request.POST['npassword'] == request.POST['cnpassword']:
+                    user.password = request.POST['npassword']
                     user.save()
                     return redirect('logout')
                 else:
